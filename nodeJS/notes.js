@@ -265,3 +265,33 @@
 //  13. Custom Headers (X-Anything or your own)
 // Purpose: You can define your own headers for tracking, logging, debugging, or internal logic.
 //  X-Custom-Token, My-Own-Header: my-app.
+
+
+
+// url.parse() -------------------
+// url.parse() is a built -in method in Node.js(from the url module) that breaks down a full URL string into its individual components like:
+// protocol
+// hostname
+// path
+// query parameters(as object)
+// hash, etc.
+        // req.url: A URL string like /users?id=5&name=John
+        // true: This flag tells Node to parse the query string into an object
+
+        // {
+        // protocol: null,
+        // slashes: null,
+        // auth: null,
+        // host: null,
+        // port: null,
+        // hostname: null,
+        // hash: null,
+        // search: '?id=5&name=john',
+        // query: { id: '5', name: 'john' },
+        // pathname: '/profile',
+        // path: '/profile?id=5&name=john',
+        // href: '/profile?id=5&name=john'
+        // }
+
+
+

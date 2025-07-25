@@ -43,23 +43,23 @@ const url = require('url');
 // const server = http.createServer(options,(req,res) =>{
 //     console.log(req.url);
 //     const pathName = req.url;
-    // Common headers used for all responses
-    // const commonHeaders = {
-    //     'Content-Type': 'text/html',                       // Default content type
-    //     'X-Powered-By': 'Node.js',                         // Shows what tech stack is used
-    //     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', // Enforces HTTPS
-    //     'X-Content-Type-Options': 'nosniff',               // Prevents MIME sniffing
-    //     'X-Frame-Options': 'DENY',                         // Prevents clickjacking
-    //     'X-XSS-Protection': '1; mode=block',               // Enables XSS filter in browser
-    //     'Content-Security-Policy': "default-src 'self'",   // Limits what external content can be loaded
-    //     'Referrer-Policy': 'no-referrer',                  // Controls how much referrer info is sent
-    //     'Cache-Control': 'no-store',                       // Prevents browser caching
-    //     'Access-Control-Allow-Origin': '*',                // CORS: allow requests from any origin
-    //     'My-Own-Header': 'hello-world',                    // Custom header
-    //     'Set-Cookie': 'userId=abc123; HttpOnly',           // Sends a cookie to the browser
-    //     'ETag': '123abc',                                  // Identifies version of the response
-    //     'Vary': 'User-Agent'                               // Response may vary based on user agent
-    // };
+// Common headers used for all responses
+// const commonHeaders = {
+//     'Content-Type': 'text/html',                       // Default content type
+//     'X-Powered-By': 'Node.js',                         // Shows what tech stack is used
+//     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', // Enforces HTTPS
+//     'X-Content-Type-Options': 'nosniff',               // Prevents MIME sniffing
+//     'X-Frame-Options': 'DENY',                         // Prevents clickjacking
+//     'X-XSS-Protection': '1; mode=block',               // Enables XSS filter in browser
+//     'Content-Security-Policy': "default-src 'self'",   // Limits what external content can be loaded
+//     'Referrer-Policy': 'no-referrer',                  // Controls how much referrer info is sent
+//     'Cache-Control': 'no-store',                       // Prevents browser caching
+//     'Access-Control-Allow-Origin': '*',                // CORS: allow requests from any origin
+//     'My-Own-Header': 'hello-world',                    // Custom header
+//     'Set-Cookie': 'userId=abc123; HttpOnly',           // Sends a cookie to the browser
+//     'ETag': '123abc',                                  // Identifies version of the response
+//     'Vary': 'User-Agent'                               // Response may vary based on user agent
+// };
 
 //     if(pathName === '/overview'){
 //         res.end("This is the overview route")
@@ -106,20 +106,59 @@ const url = require('url');
 //     }
 // });
 const data = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
+const dataObj = JSON.parse(data); 
 
-const server = http.createServer((req, res) =>{
-    const pathName = req.url;
+const template = fs.readFileSync(`${__dirname}/client/overview.html`, 'utf-8');
+const card = fs.readFileSync(`${__dirname}/client/card.html`, 'utf-8');
+const product = fs.readFileSync(`${__dirname}/client/product.html`, 'utf-8');
 
-    if(pathName === '/api'){
-       
+const replaceTemplate = (temp, product) =>{
+    let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+    output = output.replace(/{%IMAGE%}/g, product.image);
+    output = output.replace(/{%FROM%}/g, product.from);
+    output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+    output = output.replace(/{%DESCRIPTION%}/g, product.description);
+    output = output.replace(/{%PRICE%}/g, product.price);
+    output = output.replace(/{%QUANTITY%}/g, product.quantity);
+    output = output.replace(/{%PRICE%}/g, product.price);
+    output = output.replace(/{%ID%}/g, product.id);
+
+    if(!product.organic){
+        output = output.replace(/{%NOTORGANIC%}/g, 'not-organic');
+    }
+    return output;
+}
+
+const server = http.createServer((req, res) => {
+    console.log(req.url);
+    const { query,pathname } = url.parse(req.url,true);
+    console.log(query);
+    console.log(pathname);
+    if (pathname === '/overview') {
         res.writeHead(200, {
-            'Content-type':'application/json',
+            'content-type':'text/html',
+        });
+        const cardsHtml = dataObj.map(e =>replaceTemplate(card,e)).join('');
+        const output = template.replace(/{%PRODUCTCARDS%}/g, cardsHtml);
+        res.end(output);
+    } else if(pathname === '/product'){
+        res.writeHead(200, {
+            'Content-type':'text/html',
+        });
+        const productObj = dataObj[query.id];
+        const output = replaceTemplate(product, productObj);
+        res.end(output);
+    } else if (pathname === '/api') {
+        res.writeHead(200, {
+            'Content-type': 'application/json',
         })
         res.end(data);
-    }else{
+    } else if(pathname === '/') {
         res.end("<h1>Welcome to the Node.js Server</h1>");
+    }else{
+        res.end("<h1>Page not found</h1>");
     }
 })
-server.listen(8000,'localhost',() =>{
+server.listen(8000, 'localhost', () => {
     console.log('Server is running on port 8000');
 })
