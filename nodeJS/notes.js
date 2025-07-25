@@ -317,3 +317,98 @@
 // const math = require('./math');
 // console.log(math.add(10, 2));     
 // console.log(math.subtract(10, 2)); 
+
+
+//NPM ----------------------------
+// npm stands for Node Package Manager.
+// A tool to install/manage packages (libraries) in Node.js.
+// A registry (like a big warehouse) of thousands of open-source JavaScript packages.
+
+
+//PACKAGE.JSON ----------------------------
+// It is the heart of any Node.js project. It keeps track of your app's dependencies, scripts, metadata, and project settings.
+// npm init          Step-by-step creation
+// npm init - y      Create with default values(yes to all)
+
+// {
+//   "name": "myapp",
+//   "version": "1.0.0",
+//   "description": "A test Node.js app",
+//   "main": "index.js",
+//   "scripts": {
+//     "start": "node index.js",
+//     "dev": "nodemon index.js"
+//   },
+//   "dependencies": {
+//     "express": "^4.18.2"
+//   },
+//   "devDependencies": {
+//     "nodemon": "^2.0.22"
+//   },
+//   "author": "john",
+//   "license": "ISC"
+// }
+
+// Explanation of Each Field
+// Field	            Description
+// name	                    Your project/package name. Must be unique if publishing to npm registry.
+// version	            Follows Semantic Versioning (e.g., 1.2.3 = major.minor.patch).
+// description	            Short description of your app.
+// main	                    Entry point file (like index.js).
+// scripts	            Custom CLI commands like npm start, npm run dev.
+// dependencies	            Required packages to run the app.
+// devDependencies	    Packages only needed for development (not production).
+// author	            Who made the app.
+// license	            License type (e.g., ISC, MIT).
+
+
+//PACKAGE LOCK.JSON ----------------------------
+// Automatically created/updated when installing packages.
+// Locks exact versions of dependencies and sub-dependencies.
+// Ensures consistent installs across systems.
+// Your app works the same on all machines (e.g., in dev, CI/CD, production).
+// npm uses it as a cache map, so future installs are much faster.
+
+//Regular Dependency ------- 
+// npm install express
+// "dependencies": { 
+//   "express": "^4.18.2"
+// }
+
+// Dev Dependency -------
+// npm install nodemon --save-dev
+// "devDependencies": {
+//   "nodemon": "^2.0.22"
+// }
+
+//Scripts ------ 
+//npm start
+// npm run dev
+// npm run build
+// "scripts": {
+//   "start": "node index.js",
+//   "dev": "nodemon index.js",
+//   "build": "webpack --mode production"
+// }
+
+//even create own commands
+
+
+//Versioning rules ----------
+// ^1.2.3: Allows minor and patch updates (e.g., 1.2.4, 1.3.0, but not 2.0.0).
+// ~1.2.3: Allows only patch updates (e.g., 1.2.4, 1.2.5, but not 1.3.0).
+// 1.2.3: Locks to that exact version.
+
+//Installing packages ----------------
+// npm install <package-name> - Installs the latest version of a package.
+// npm install <package-name>@<version> - Installs a specific version.
+// npm install <package-name>@latest - Installs the latest version of a package.
+// npm install - Installs all dependencies listed in package.json.
+
+//Removing a Package ----------------
+// npm uninstall <package-name> - Removes a package from node_modules and package.json.
+
+
+//Publishing a Package ----------------
+// npm login - Log in to your npm account.
+// npm publish - Publish your package to the npm registry.

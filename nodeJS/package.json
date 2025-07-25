@@ -1,5 +1,15 @@
 {
   "dependencies": {
     "selfsigned": "^3.0.1"
-  }
+  },
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "Learning",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
