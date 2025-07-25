@@ -6,6 +6,7 @@ const http = require('http');
 // const https = require('https');
 const url = require('url');
 const replaceTemplate = require('./modules/replaceTemplate');
+const slugify = require('slugify');
 
 //synchronous - Blocking ---------------------
 // const textInput = fs.readFileSync('./txt/input.txt','utf-8');
@@ -107,8 +108,11 @@ const replaceTemplate = require('./modules/replaceTemplate');
 //     }
 // });
 const data = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
-const dataObj = JSON.parse(data); 
+const dataObj = JSON.parse(data);
 
+const slugs = dataObj.map(e => slugify(e.productName, { lower: true }));
+console.log(slugs);
+console.log(slugify('Fresh Avocados', { lower: true }))
 const template = fs.readFileSync(`${__dirname}/client/overview.html`, 'utf-8');
 const card = fs.readFileSync(`${__dirname}/client/card.html`, 'utf-8');
 const product = fs.readFileSync(`${__dirname}/client/product.html`, 'utf-8');
@@ -132,19 +136,19 @@ const product = fs.readFileSync(`${__dirname}/client/product.html`, 'utf-8');
 
 const server = http.createServer((req, res) => {
     console.log(req.url);
-    const { query,pathname } = url.parse(req.url,true);
+    const { query, pathname } = url.parse(req.url, true);
     console.log(query);
     console.log(pathname);
     if (pathname === '/overview') {
         res.writeHead(200, {
-            'content-type':'text/html',
+            'content-type': 'Text/html',
         });
-        const cardsHtml = dataObj.map(e =>replaceTemplate(card,e)).join('');
+        const cardsHtml = dataObj.map(e => replaceTemplate(card, e)).join('');
         const output = template.replace(/{%PRODUCTCARDS%}/g, cardsHtml);
         res.end(output);
-    } else if(pathname === '/product'){
+    } else if (pathname === '/product') {
         res.writeHead(200, {
-            'Content-type':'text/html',
+            'Content-type': 'text/html',
         });
         const productObj = dataObj[query.id];
         const output = replaceTemplate(product, productObj);
@@ -154,9 +158,9 @@ const server = http.createServer((req, res) => {
             'Content-type': 'application/json',
         })
         res.end(data);
-    } else if(pathname === '/') {
+    } else if (pathname === '/') {
         res.end("<h1>Welcome to the Node.js Server</h1>");
-    }else{
+    } else {
         res.end("<h1>Page not found</h1>");
     }
 })

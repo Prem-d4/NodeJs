@@ -1,14 +1,14 @@
 {
   "dependencies": {
-    "selfsigned": "^3.0.1"
+    "selfsigned": "^3.0.1",
+    "slugify": "^1.6.6"
   },
   "name": "nodejs",
   "version": "1.0.0",
   "description": "Learning",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC"

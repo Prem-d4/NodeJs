@@ -412,3 +412,7 @@
 //Publishing a Package ----------------
 // npm login - Log in to your npm account.
 // npm publish - Publish your package to the npm registry.
+
+//npm outdated ----------------
+// Lists all packages that are outdated in your project.
+// Shows current version, wanted version, and latest version.
