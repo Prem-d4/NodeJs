@@ -294,4 +294,26 @@
         // }
 
 
+//module.exports ------------------------------
+//In Node.js, every file is treated as a separate module.To make something available outside that file(so other files can use it), you export it using module.exports.
+// module.exports = what your file sends out (exports).
+// require() = how you import another file/module.
 
+// Multiple exports ----------------------
+// function add(a, b) {
+//   return a + b;
+// }
+
+// function subtract(a, b) {
+//   return a - b;
+// }
+
+// module.exports = {
+//   add,
+//   subtract
+// };
+
+//usage ----
+// const math = require('./math');
+// console.log(math.add(10, 2));     
+// console.log(math.subtract(10, 2)); 

@@ -5,6 +5,7 @@ const fs = require('fs'); //require - built in function used to import modules
 const http = require('http');
 // const https = require('https');
 const url = require('url');
+const replaceTemplate = require('./modules/replaceTemplate');
 
 //synchronous - Blocking ---------------------
 // const textInput = fs.readFileSync('./txt/input.txt','utf-8');
@@ -112,22 +113,22 @@ const template = fs.readFileSync(`${__dirname}/client/overview.html`, 'utf-8');
 const card = fs.readFileSync(`${__dirname}/client/card.html`, 'utf-8');
 const product = fs.readFileSync(`${__dirname}/client/product.html`, 'utf-8');
 
-const replaceTemplate = (temp, product) =>{
-    let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
-    output = output.replace(/{%IMAGE%}/g, product.image);
-    output = output.replace(/{%FROM%}/g, product.from);
-    output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
-    output = output.replace(/{%DESCRIPTION%}/g, product.description);
-    output = output.replace(/{%PRICE%}/g, product.price);
-    output = output.replace(/{%QUANTITY%}/g, product.quantity);
-    output = output.replace(/{%PRICE%}/g, product.price);
-    output = output.replace(/{%ID%}/g, product.id);
+// const replaceTemplate = (temp, product) =>{
+//     let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+//     output = output.replace(/{%IMAGE%}/g, product.image);
+//     output = output.replace(/{%FROM%}/g, product.from);
+//     output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+//     output = output.replace(/{%DESCRIPTION%}/g, product.description);
+//     output = output.replace(/{%PRICE%}/g, product.price);
+//     output = output.replace(/{%QUANTITY%}/g, product.quantity);
+//     output = output.replace(/{%PRICE%}/g, product.price);
+//     output = output.replace(/{%ID%}/g, product.id);
 
-    if(!product.organic){
-        output = output.replace(/{%NOTORGANIC%}/g, 'not-organic');
-    }
-    return output;
-}
+//     if(!product.organic){
+//         output = output.replace(/{%NOTORGANIC%}/g, 'not-organic');
+//     }
+//     return output;
+// }
 
 const server = http.createServer((req, res) => {
     console.log(req.url);
