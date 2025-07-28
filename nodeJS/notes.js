@@ -416,3 +416,10 @@
 //npm outdated ----------------
 // Lists all packages that are outdated in your project.
 // Shows current version, wanted version, and latest version.
+
+
+//CLIENT SERVER ARCHITECTURE ----------------
+// Client-Server Architecture is a model where the client (browser or app) requests resources from a server, which processes the request and sends back the response.
+
+//DNS (Domain Name System) ----------------
+// DNS is like the phonebook of the internet. It translates human-readable domain names (like www.example.com) into IP addresses (like https://216.58.211.206:443) that computers use to communicate with each other. It will convert the domain name into an IP address so that the browser can find the server hosting the website.
