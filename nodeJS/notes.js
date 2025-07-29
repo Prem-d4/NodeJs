@@ -470,3 +470,32 @@
 // 2. Writable Streams: Used to write data to a destination (e.g., file, network).
 // 3. Duplex Streams: Can read and write data (e.g., TCP sockets).      
 // 4. Transform Streams: A type of duplex stream that can modify the data as it is read or written (e.g., zlib compression).
+
+//MODULES --------------------------------
+// Modules are reusable pieces of code that can be imported and used in other files. Node.js has a built-in module system that allows you to organize your code into separate files, making it easier to manage and maintain.
+
+// Class based modules
+// const Operations = require('./modules/testModule.js');
+// const ops = new Operations();
+// console.log(ops.add(2, 3));
+// console.log(ops.subtract(5, 2));
+// console.log(ops.multiply(4, 3));
+
+//Plain object based modules or function based modules
+// const ops2 = require('./modules/testModule2.js');
+// console.log(ops2.add(2, 3));
+// console.log(ops2.subtract(5, 2));
+// console.log(ops2.multiply(4, 3));
+
+// Destructuring imports
+// const {add, subtract, multiply} = require('./modules/testModule2.js');
+// console.log(add(2, 3));
+// console.log(subtract(5, 2));        
+// console.log(multiply(4, 3));
+
+// Caching in Node.js
+// When you require a module, Node.js caches it. This means that if you require the same module again, it won't be reloaded from disk but will use the cached version. This improves performance and avoids unnecessary file reads.
+// require('./modules/testModule3.js')();
+// require('./modules/testModule3.js')();
+// require('./modules/testModule3.js')();
+// Caching is useful for modules that perform expensive operations or have side effects, as it ensures they are only executed once per application run.
