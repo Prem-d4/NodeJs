@@ -499,3 +499,15 @@
 // require('./modules/testModule3.js')();
 // require('./modules/testModule3.js')();
 // Caching is useful for modules that perform expensive operations or have side effects, as it ensures they are only executed once per application run.
+
+
+//PROMISES -------------------
+// Promises are a way to handle asynchronous operations in JavaScript. They represent a value that may be available now, or in the future, or never. A promise can be in one of three states: pending, fulfilled, or rejected. 
+// Promises allow you to write cleaner, more manageable asynchronous code without falling into callback hell.
+// (resolve, reject) arguments are functions that you call to change the state of the promise.
+
+// Callback Hell	                 Promises
+// Hard to read (nested levels)	         Flat, readable chains
+// Difficult error handling	         Unified .catch() for whole flow
+// Less maintainable	                 Easy to update and debug
+

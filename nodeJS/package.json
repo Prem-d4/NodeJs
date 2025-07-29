@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "selfsigned": "^3.0.1",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "superagent": "^10.2.3"
   },
   "name": "nodejs",
   "version": "1.0.0",
