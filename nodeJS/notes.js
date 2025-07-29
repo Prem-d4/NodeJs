@@ -511,3 +511,10 @@
 // Difficult error handling	         Unified .catch() for whole flow
 // Less maintainable	                 Easy to update and debug
 
+//ASYNC/AWAIT -------------------
+// Async/await is a syntax sugar built on top of Promises that allows you to write asynchronous code that looks synchronous. It makes your code easier to read and understand by avoiding the chaining of .then() calls.
+// The async keyword is used to declare a function as asynchronous, and the await keyword is used to pause the execution of the function until the Promise is resolved or rejected.
+// Async/await is built on top of Promises, so you can use them together.
+// try catch blocks can be used to handle errors in async functions, making error handling more straightforward.
+//Async functions always runs in the background, so they don't block the main thread.
+//Many async functions can run concurrently, allowing for better performance in I/O-bound tasks.Many async functions can run in another async functions.
