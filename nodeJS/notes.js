@@ -463,3 +463,10 @@
 
 
 //STREAMS --------------------------------
+// Streams are a powerful way to handle data in Node.js, allowing you to read or write data in chunks rather than loading everything into memory at once. This is especially useful for large files or data sources.
+
+// Types of Streams:
+// 1. Readable Streams: Used to read data from a source (e.g., file, network).
+// 2. Writable Streams: Used to write data to a destination (e.g., file, network).
+// 3. Duplex Streams: Can read and write data (e.g., TCP sockets).      
+// 4. Transform Streams: A type of duplex stream that can modify the data as it is read or written (e.g., zlib compression).
