@@ -423,3 +423,43 @@
 
 //DNS (Domain Name System) ----------------
 // DNS is like the phonebook of the internet. It translates human-readable domain names (like www.example.com) into IP addresses (like https://216.58.211.206:443) that computers use to communicate with each other. It will convert the domain name into an IP address so that the browser can find the server hosting the website.
+
+//EVENT DRIVEN ARCHITECTURE ----------------
+// Event-Driven Architecture is a software design pattern where the flow of the program is determined by events or messages. In this model, components communicate by emitting and listening for events, allowing for decoupled and scalable systems. For example, in a web application, a user clicking a button can trigger an event that updates the UI or fetches data from the server without blocking the main thread.
+// Event emitter ---> emit events ---> Event listener ---> calls ----> Attached callback function
+
+// // 1. Import events module
+// const EventEmitter = require('events');
+
+// // 2. Create an instance of EventEmitter
+// const myEmitter = new EventEmitter();
+
+// // 3. Define a listener (event listener)
+// myEmitter.on('userLoggedIn', (username) => {
+//   console.log(`${username} has logged in!`);
+// });
+
+// // 4. Another listener for the same event
+// myEmitter.on('userLoggedIn', (username) => {
+//   console.log(`Sending welcome email to ${username}`);
+// });
+
+// // 5. Emit the event (event emitter)
+// myEmitter.emit('userLoggedIn', 'user');
+// Output:
+// pgsql
+// Copy
+// Edit
+// user has logged in!
+// Sending welcome email to user
+// Real-World Analogy:
+// Imagine a doorbell:
+
+// Someone presses the button (emits an event)
+
+// Inside the house, a bell rings (listener reacts)
+
+// You go open the door (callback is executed)
+
+
+//STREAMS --------------------------------
