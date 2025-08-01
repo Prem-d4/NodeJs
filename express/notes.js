@@ -100,3 +100,126 @@
 //503 - Service Unavailable: Server temporarily unavailable
 //504 - Gateway Timeout: Server didn't receive timely response from upstream
 
+
+//MIDDLEWARE ----------------------------------------
+//Middleware functions are functions that execute during the request-response cycle
+//They have access to request (req), response (res), and next middleware function (next)
+//Middleware can: execute code, modify req/res objects, end request-response cycle, call next middleware
+
+//MIDDLEWARE FUNCTION STRUCTURE
+//function middlewareName(req, res, next) {
+//  // Execute code
+//  // Modify req or res
+//  next(); // Call next middleware (IMPORTANT!)
+//}
+
+//TYPES OF MIDDLEWARE---------------------------
+
+//1. APPLICATION-LEVEL MIDDLEWARE
+//Applied to entire app using app.use()
+//Example:
+//app.use((req, res, next) => {
+//  console.log('Time:', Date.now());
+//  next();
+//});
+
+//2. ROUTER-LEVEL MIDDLEWARE  
+//Applied to specific routes using router.use()
+//Example:
+//const router = express.Router();
+//router.use('/users', authMiddleware);
+
+//3. ERROR-HANDLING MIDDLEWARE
+//Has 4 parameters: (err, req, res, next)
+//Example:
+//app.use((err, req, res, next) => {
+//  console.error(err.stack);
+//  res.status(500).send('Something broke!');
+//});
+
+//4. BUILT-IN MIDDLEWARE
+//express.json() - Parse JSON bodies
+//express.urlencoded() - Parse URL-encoded bodies  
+//express.static() - Serve static files
+//Example:
+//app.use(express.json());
+//app.use(express.static('public'));
+
+//5. THIRD-PARTY MIDDLEWARE
+//cors, helmet, morgan, compression, etc.
+//Example:
+//const cors = require('cors');
+//app.use(cors());
+
+//MIDDLEWARE EXECUTION ORDER---------------------------
+//Middleware executes in the order it's defined
+//Example:
+//app.use(middleware1); // Runs first
+//app.use(middleware2); // Runs second
+//app.get('/users', middleware3, handler); // middleware3 runs before handler
+
+//COMMON MIDDLEWARE EXAMPLES---------------------------
+
+//Logging Middleware
+//app.use((req, res, next) => {
+//  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
+//  next();
+//});
+
+//Authentication Middleware
+//const authMiddleware = (req, res, next) => {
+//  const token = req.headers.authorization;
+//  if (!token) {
+//    return res.status(401).json({ error: 'No token provided' });
+//  }
+//  // Verify token logic here
+//  next();
+//};
+
+//Request Time Middleware
+//app.use((req, res, next) => {
+//  req.requestTime = new Date().toISOString();
+//  next();
+//});
+
+//Body Size Limit Middleware
+//app.use(express.json({ limit: '10mb' }));
+
+//MIDDLEWARE PATTERNS---------------------------
+
+//Conditional Middleware
+//app.use('/admin', (req, res, next) => {
+//  if (req.user && req.user.role === 'admin') {
+//    next();
+//  } else {
+//    res.status(403).json({ error: 'Admin access required' });
+//  }
+//});
+
+//Multiple Middleware in Route
+//app.get('/protected', authMiddleware, logMiddleware, (req, res) => {
+//  res.json({ message: 'Protected route accessed' });
+//});
+
+//Middleware with Parameters
+//const rateLimiter = (maxRequests) => {
+//  return (req, res, next) => {
+//    // Rate limiting logic
+//    next();
+//  };
+//};
+//app.use(rateLimiter(100));
+
+//IMPORTANT MIDDLEWARE RULES---------------------------
+//Always call next() unless you're ending the response
+//Order matters - middleware runs in sequence
+//Error middleware must have 4 parameters
+//Use return when sending response to avoid calling next()
+//Middleware can be async/await compatible
+
+//COMMON BUILT-IN MIDDLEWARE---------------------------
+//app.use(express.json()); // Parse JSON request bodies
+//app.use(express.urlencoded({ extended: true })); // Parse form data
+//app.use(express.static('public')); // Serve static files from 'public' directory
+//app.use(express.raw()); // Parse raw request bodies
+//app.use(express.text()); // Parse text request bodies
