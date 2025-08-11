@@ -1,0 +1,210 @@
+[
+    {
+        "name": "Test",
+        "description": "Test",
+        "price": 120,
+        "quantity": 90,
+        "on_sale": true
+    },
+    {
+       "name": "Test 2",
+        "description": "Test 2",
+        "price": 70,
+        "quantity": 300,
+        "on_sale": false
+    },
+    {
+        "name":"Test 3",
+        "description":"Test 3",
+        "price":10000,
+        "quantity":10,
+        "on_sale":true
+    },
+    {
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "age": 28,
+    "salary": 75000,
+    "department": "Engineering",
+    "skills": ["JavaScript", "Python", "MongoDB"],
+    "address": {
+      "street": "123 Main St",
+      "city": "New York",
+      "zipcode": "10001"
+    },
+    "isActive": true,
+    "joinDate": "2022-01-15",
+    "projects": [
+      {"name": "Project A", "status": "completed", "score": 85},
+      {"name": "Project B", "status": "ongoing", "score": 92}
+    ]
+  },
+  {
+    "name": "Alice Smith",
+    "email": "alice@gmail.com",
+    "age": 32,
+    "salary": 85000,
+    "department": "Marketing",
+    "skills": ["SEO", "Content Writing", "Analytics"],
+    "address": {
+      "street": "456 Oak Ave",
+      "city": "Los Angeles",
+      "zipcode": "90210"
+    },
+    "isActive": true,
+    "joinDate": "2021-03-20",
+    "projects": [
+      {"name": "Campaign X", "status": "completed", "score": 88},
+      {"name": "Campaign Y", "status": "completed", "score": 95}
+    ]
+  },
+  {
+    "name": "Bob Johnson",
+    "email": "bob@gmail.com",
+    "age": 45,
+    "salary": 95000,
+    "department": "Engineering",
+    "skills": ["Java", "Spring", "Docker", "Kubernetes"],
+    "address": {
+      "street": "789 Pine Rd",
+      "city": "Chicago",
+      "zipcode": "60601"
+    },
+    "isActive": false,
+    "joinDate": "2019-07-10",
+    "projects": [
+      {"name": "System Upgrade", "status": "completed", "score": 78},
+      {"name": "API Development", "status": "ongoing", "score": 89}
+    ]
+  },
+  {
+    "name": "Carol Davis",
+    "email": "carol@gmail.com",
+    "age": 29,
+    "salary": 70000,
+    "department": "Design",
+    "skills": ["Photoshop", "Illustrator", "Figma"],
+    "address": {
+      "street": "321 Elm St",
+      "city": "San Francisco",
+      "zipcode": "94102"
+    },
+    "isActive": true,
+    "joinDate": "2022-09-05",
+    "projects": [
+      {"name": "UI Redesign", "status": "ongoing", "score": 91}
+    ]
+  },
+  {
+    "name": "David Wilson",
+    "email": "david@gmail.com",
+    "age": 35,
+    "salary": 80000,
+    "department": "Sales",
+    "skills": ["CRM", "Negotiation", "Lead Generation"],
+    "address": {
+      "street": "654 Maple Dr",
+      "city": "Miami",
+      "zipcode": "33101"
+    },
+    "isActive": true,
+    "joinDate": "2020-11-12",
+    "projects": [
+      {"name": "Q4 Sales", "status": "completed", "score": 87},
+      {"name": "Client Onboarding", "status": "ongoing", "score": 83}
+    ]
+  },
+  {
+    "name": "Emma Brown",
+    "email": "emma@gmail.com",
+    "age": 26,
+    "salary": 65000,
+    "department": "HR",
+    "skills": ["Recruitment", "Training", "Employee Relations"],
+    "address": {
+      "street": "987 Cedar Ln",
+      "city": "Seattle",
+      "zipcode": "98101"
+    },
+    "isActive": true,
+    "joinDate": "2023-02-28",
+    "projects": [
+      {"name": "Hiring Drive", "status": "ongoing", "score": 90}
+    ]
+  },
+  {
+    "name": "Frank Miller",
+    "email": "frank@gmail.com",
+    "age": 52,
+    "salary": 120000,
+    "department": "Management",
+    "skills": ["Leadership", "Strategy", "Budget Planning"],
+    "address": {
+      "street": "147 Birch Ave",
+      "city": "Boston",
+      "zipcode": "02101"
+    },
+    "isActive": true,
+    "joinDate": "2018-05-15",
+    "projects": [
+      {"name": "Company Restructure", "status": "completed", "score": 82},
+      {"name": "Budget 2024", "status": "ongoing", "score": 88}
+    ]
+  },
+  {
+    "name": "Grace Lee",
+    "email": "grace@gmail.com",
+    "age": 31,
+    "salary": 78000,
+    "department": "Engineering",
+    "skills": ["React", "Node.js", "AWS", "MongoDB"],
+    "address": {
+      "street": "258 Willow St",
+      "city": "Austin",
+      "zipcode": "73301"
+    },
+    "isActive": true,
+    "joinDate": "2021-08-22",
+    "projects": [
+      {"name": "Web App", "status": "completed", "score": 94},
+      {"name": "Mobile App", "status": "ongoing", "score": 86}
+    ]
+  },
+  {
+    "name": "Henry Taylor",
+    "email": "henry@gmail.com",
+    "age": 38,
+    "salary": 72000,
+    "department": "Support",
+    "skills": ["Customer Service", "Technical Support", "Troubleshooting"],
+    "address": {
+      "street": "369 Spruce Rd",
+      "city": "Denver",
+      "zipcode": "80201"
+    },
+    "isActive": false,
+    "joinDate": "2020-04-18",
+    "projects": [
+      {"name": "Support System", "status": "completed", "score": 79}
+    ]
+  },
+  {
+    "name": "Ivy Chen",
+    "email": "ivy@gmail.com",
+    "age": 27,
+    "salary": 68000,
+    "department": "Marketing",
+    "skills": ["Social Media", "Email Marketing", "Brand Management"],
+    "address": {
+      "street": "741 Poplar Ave",
+      "city": "Portland",
+      "zipcode": "97201"
+    },
+    "isActive": true,
+    "joinDate": "2022-12-10",
+    "projects": [
+      {"name": "Brand Campaign", "status": "ongoing", "score": 93},
+      {"name": "Social Strategy", "status": "completed", "score": 89}
+    ]
+  }
+]

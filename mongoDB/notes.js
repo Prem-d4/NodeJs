@@ -463,3 +463,675 @@
 
 //Partial matching for autocomplete:
 //db.user.find({name: {$regex: "^" + userInput, $options: "i"}})
+
+//UPDATE OPERATORS (Only for UPDATE operations)---------------------------
+//SYNTAX:
+//$set - set field value
+//db.users.updateOne({_id: 1}, {$set: {age: 31}})
+//$unset - remove field
+//db.users.updateOne({_id: 1}, {$unset: {age: ""}})
+//$inc - increment/decrement number
+//db.users.updateOne({_id: 1}, {$inc: {age: 1}})
+//$mul - multiply field value
+//db.users.updateOne({_id: 1}, {$mul: {price: 1.1}})
+//$rename - rename field
+//db.users.updateOne({_id: 1}, {$rename: {"name": "fullName"}})
+//$min - update if new value is less than current
+//db.users.updateOne({_id: 1}, {$min: {age: 25}})
+//$max - update if new value is greater than current
+//db.users.updateOne({_id: 1}, {$max: {age: 30}})
+//$currentDate - set to current date
+//db.users.updateOne({_id: 1}, {$currentDate: {lastModified: true}})
+
+//ARRAY UPDATE OPERATORS---------------------------
+//$push - add element to array
+//db.users.updateOne({_id: 1}, {$push: {hobbies: "swimming"}})
+//$pull - remove elements matching condition
+//db.users.updateOne({_id: 1}, {$pull: {hobbies: "reading"}})
+//$pop - remove first (-1) or last (1) element
+//db.users.updateOne({_id: 1}, {$pop: {hobbies: 1}})
+//$addToSet - add element if not exists
+//db.users.updateOne({_id: 1}, {$addToSet: {hobbies: "gaming"}})
+//$pullAll - remove all matching elements
+//db.users.updateOne({_id: 1}, {$pullAll: {hobbies: ["reading", "gaming"]}})
+
+//READ-ONLY METHODS (Only for READ operations)---------------------------
+//Projection - select specific fields
+//db.users.find({}, {name: 1, email: 1}) // include only name, email
+//db.users.find({}, {age: 0}) // exclude age field
+
+//Sorting
+//db.users.find().sort({age: 1}) // ascending
+//db.users.find().sort({age: -1}) // descending
+
+//Limiting and Skipping
+//db.users.find().limit(5) // first 5 documents
+//db.users.find().skip(10) // skip first 10
+//db.users.find().sort({age: 1}).limit(5).skip(10) // chaining
+
+//Counting
+//db.users.countDocuments({age: {$gt: 25}}) // count matching documents
+//db.users.estimatedDocumentCount() // estimated total count
+
+//USAGE SUMMARY---------------------------
+//Comparison + Logical + Element + Array + String operators: READ, UPDATE, DELETE
+//Update operators: Only UPDATE operations
+//Projection, Sorting, Limiting, Counting: Only READ operations
+
+//replaceOne() - REPLACE ENTIRE DOCUMENT---------------------------
+//replaceOne() completely replaces a document with a new document
+//Unlike updateOne() which modifies specific fields, replaceOne() replaces the whole document
+//DIFFERENCE: updateOne() vs replaceOne()---------------------------
+
+//updateOne() - Modifies specific fields:
+//db.user.updateOne(
+//  {email: "john@gmail.com"},
+//  {$set: {age: 30, department: "Management"}}
+//)
+//Result: Only age and department change, other fields remain
+
+//replaceOne() - Replaces entire document:
+//db.user.replaceOne(
+//  {email: "john@gmail.com"},
+//  {name: "John Smith", email: "john@gmail.com", age: 30}
+//)
+//Result: ONLY the fields in replacement exist, others are REMOVED
+
+//IMPORTANT NOTES---------------------------
+//1. _id field is NEVER replaced (stays the same)
+//2. Fields not in replacement document are REMOVED
+//3. Replacement document cannot contain update operators ($set, $inc, etc.)
+//4. Only replaces the FIRST matching document
+
+//PRACTICAL EXAMPLES---------------------------
+
+//Example 1: Replace user profile completely
+//db.user.replaceOne(
+//  {name: "Alice Smith"},
+//  {
+//    name: "Alice Johnson",
+//    email: "alice.johnson@company.com",
+//    age: 33,
+//    department: "Sales",
+//    skills: ["CRM", "Sales", "Marketing"],
+//    isActive: true,
+//    lastLogin: new Date()
+//  }
+//)
+
+//Example 2: Replace with minimal data (removes other fields)
+//db.user.replaceOne(
+//  {_id: ObjectId("...")},
+//  {
+//    name: "Bob Wilson",
+//    status: "inactive"
+//  }
+//)
+//Result: Only name and status remain, all other fields removed
+
+//RETURN VALUE---------------------------
+//replaceOne() returns:
+//{
+//  acknowledged: true,
+//  matchedCount: 1,        // Number of documents matched
+//  modifiedCount: 1,       // Number of documents replaced
+//  upsertedId: null        // If upsert was used
+//}
+
+//WITH UPSERT OPTION---------------------------
+//If no document matches, create new one:
+//db.user.replaceOne(
+//  {email: "newuser@gmail.com"},
+//  {
+//    name: "New User",
+//    email: "newuser@gmail.com",
+//    age: 25,
+//    department: "IT"
+//  },
+//  {upsert: true}           // Create if not found
+//)
+
+//WHEN TO USE replaceOne()---------------------------
+//Use replaceOne() when:
+//- You want to completely rewrite a document
+//- You have a new version of the entire document
+//- You want to remove fields not in the new version
+//- You're implementing a "save" operation that replaces everything
+
+//Use updateOne() when:
+//- You want to modify specific fields only
+//- You want to keep existing fields unchanged
+//- You're making incremental updates
+
+//COMMON MISTAKES---------------------------
+// Wrong - Using update operators:
+//db.user.replaceOne({_id: 1}, {$set: {name: "John"}}) // Error!
+
+// Correct - Plain document:
+//db.user.replaceOne({_id: 1}, {name: "John", email: "john@gmail.com"})
+
+// Wrong - Forgetting fields you want to keep:
+//db.user.replaceOne({_id: 1}, {name: "John"}) // Removes all other fields!
+
+// Correct - Include all fields you want to keep:
+//db.user.replaceOne({_id: 1}, {
+//  name: "John",
+//  email: "john@gmail.com",
+//  age: 30,
+//  department: "Engineering"
+//})
+
+//WHAT IS A CURSOR?---------------------------
+//Cursor = A pointer to the result set of a query
+//It's NOT the actual data, but a way to iterate through results
+//Like a bookmark that moves through query results one by one
+
+//When you run db.tasks.find():
+//- MongoDB doesn't return all documents immediately
+//- It returns a cursor object that points to the results
+//- You can then iterate through the cursor to get documents
+
+//CURSOR CONCEPT---------------------------
+//Think of cursor like reading a book:
+//- Cursor = Your finger pointing to current line
+//- You can move finger to next line (next document)
+//- You can go back to beginning
+//- You can convert all pages to array (toArray())
+
+//1. db.tasks.find().toArray()---------------------------
+//Converts cursor to JavaScript array
+//Gets ALL documents at once and puts them in an array
+
+//Example:
+//db.tasks.find().toArray()
+//Returns: [
+//  {_id: 1, name: "Task 1", status: "pending"},
+//  {_id: 2, name: "Task 2", status: "completed"},
+//  {_id: 3, name: "Task 3", status: "ongoing"}
+//]
+
+//Use when: You need all results as an array for processing
+
+//2. db.tasks.find().forEach()---------------------------
+//Iterates through cursor one document at a time
+//Executes a function for each document
+
+//CORRECT SYNTAX:
+//db.tasks.find().forEach(function(task) {
+//  printjson(task);
+//})
+
+//OR with arrow function:
+//db.tasks.find().forEach((task) => {
+//  printjson(task);
+//})
+
+//This prints each document:
+//{_id: 1, name: "Task 1", status: "pending"}
+//{_id: 2, name: "Task 2", status: "completed"}
+//{_id: 3, name: "Task 3", status: "ongoing"}
+
+//examples ---
+// db.tasks.find().forEach((task)=>{printjson(task)})
+// db.tasks.find().forEach((task)=>{print("Task"+" "+ task.name)})
+//  db.tasks.find().forEach((task)=>{if(task.name="Kubernetes")printjson(task)})
+
+//PROJECTION ----------------------------------
+//Projection = Selecting which fields to include/exclude in query results
+//Like choosing specific columns in SQL SELECT statement
+//Reduces data transfer and improves performance
+
+//SYNTAX:
+//db.collection.find(query, projection)
+//db.collection.find({filter}, {field1: 1, field2: 0})
+
+//PROJECTION VALUES:
+//1 = Include field (show this field)
+//0 = Exclude field (hide this field)
+
+//BASIC PROJECTION EXAMPLES---------------------------
+
+//Sample document:
+//{
+//  _id: ObjectId("..."),
+//  name: "John Doe",
+//  email: "john@gmail.com", 
+//  age: 28,
+//  salary: 75000,
+//  department: "Engineering",
+//  skills: ["JavaScript", "Python"],
+//  address: {street: "123 Main St", city: "New York"}
+//}
+
+//1. INCLUDE SPECIFIC FIELDS (1 = include)
+//db.user.find({}, {name: 1, email: 1})
+//Result:
+//{
+//  _id: ObjectId("..."),  // _id always included by default
+//  name: "John Doe",
+//  email: "john@gmail.com"
+//}
+
+//2. EXCLUDE SPECIFIC FIELDS (0 = exclude)
+//db.user.find({}, {salary: 0, address: 0})
+//Result:
+//{
+//  _id: ObjectId("..."),
+//  name: "John Doe", 
+//  email: "john@gmail.com",
+//  age: 28,
+//  department: "Engineering",
+//  skills: ["JavaScript", "Python"]
+//}
+//Note: All fields shown EXCEPT salary and address
+
+//3. EXCLUDE _id FIELD
+//db.user.find({}, {name: 1, email: 1, _id: 0})
+//Result:
+//{
+//  name: "John Doe",
+//  email: "john@gmail.com"
+//}
+//Note: _id is excluded
+
+//PROJECTION RULES---------------------------
+//1. You can either INCLUDE fields (1) OR EXCLUDE fields (0), not both
+//2. Exception: _id can always be excluded with 0
+//3. If you include any field with 1, only those fields are returned
+//4. If you exclude fields with 0, all other fields are returned
+
+//VALID PROJECTIONS:
+// Include only: {name: 1, email: 1}
+// Exclude only: {salary: 0, address: 0}
+// Include + exclude _id: {name: 1, email: 1, _id: 0}
+
+//INVALID PROJECTIONS:
+// Mix include/exclude: {name: 1, salary: 0} // Error!
+
+//PRACTICAL EXAMPLES---------------------------
+
+//Example 1: User profile (only public info)
+//db.user.find({}, {name: 1, email: 1, department: 1, _id: 0})
+//Result: Only name, email, department (no _id, salary, etc.)
+
+//Example 2: Hide sensitive data
+//db.user.find({}, {salary: 0, address: 0})
+//Result: All fields except salary and address
+
+//Example 3: API response (minimal data)
+//db.user.find({department: "Engineering"}, {name: 1, skills: 1})
+//Result: Only name and skills for Engineering users
+
+//Example 4: Dashboard summary
+//db.user.find({}, {name: 1, department: 1, age: 1, _id: 0})
+//Result: Clean data without ObjectId
+
+//NESTED FIELD PROJECTION---------------------------
+
+//Include nested fields:
+//db.user.find({}, {"address.city": 1, "address.zipcode": 1})
+//Result:
+//{
+//  _id: ObjectId("..."),
+//  address: {
+//    city: "New York",
+//    zipcode: "10001"
+//  }
+//}
+
+//Exclude nested fields:
+//db.user.find({}, {"address.street": 0})
+//Result: All fields, but address.street is removed
+
+//ARRAY PROJECTION---------------------------
+
+//Include array field:
+//db.user.find({}, {name: 1, skills: 1})
+//Result:
+//{
+//  _id: ObjectId("..."),
+//  name: "John Doe",
+//  skills: ["JavaScript", "Python"]
+//}
+
+//Array element projection (advanced):
+//db.user.find({}, {name: 1, "skills.$": 1}) // First matching element
+//db.user.find({}, {name: 1, skills: {$slice: 2}}) // First 2 elements
+
+//PROJECTION WITH QUERIES---------------------------
+
+//Find + Project together:
+//db.user.find(
+//  {department: "Engineering"},     // Query filter
+//  {name: 1, skills: 1, _id: 0}    // Projection
+//)
+//Result: Name and skills of Engineering users only
+
+//Complex query with projection:
+//db.user.find(
+//  {age: {$gt: 25}, department: "Engineering"},
+//  {name: 1, age: 1, salary: 1}
+//)
+
+//PERFORMANCE BENEFITS---------------------------
+
+//Without projection (transfers all data):
+//db.user.find({department: "Engineering"})
+//Network transfer: ~500 bytes per document
+
+//With projection (transfers only needed fields):
+//db.user.find({department: "Engineering"}, {name: 1, email: 1})
+//Network transfer: ~100 bytes per document
+
+//PROJECTION IN AGGREGATION---------------------------
+//In aggregation pipeline, use $project stage:
+//db.user.aggregate([
+//  {$match: {department: "Engineering"}},
+//  {$project: {name: 1, email: 1, _id: 0}}
+//])
+
+//COMMON USE CASES---------------------------
+
+//1. API responses (hide sensitive data):
+//db.user.find({}, {password: 0, ssn: 0})
+
+//2. Mobile apps (reduce data usage):
+//db.products.find({}, {name: 1, price: 1, image: 1})
+
+//3. Reports (specific columns):
+//db.sales.find({}, {date: 1, amount: 1, customer: 1, _id: 0})
+
+//4. Search results (relevant fields only):
+//db.articles.find(
+//  {$text: {$search: "mongodb"}},
+//  {title: 1, summary: 1, author: 1}
+//)
+
+//PROJECTION WITH OTHER METHODS---------------------------
+
+//With findOne():
+//db.user.findOne({email: "john@gmail.com"}, {name: 1, department: 1})
+
+//With sort():
+//db.user.find({}, {name: 1, age: 1}).sort({age: -1})
+
+//With limit():
+//db.user.find({}, {name: 1, email: 1}).limit(5)
+
+//BEST PRACTICES---------------------------
+//1. Always use projection in production to reduce network traffic
+//2. Exclude large fields (images, documents) when not needed
+//3. Include only fields your application actually uses
+//4. Use projection in APIs to control response structure
+//5. Consider indexing projected fields for better performance
+
+//SUMMARY---------------------------
+//Projection controls which fields are returned in query results:
+//- 1 = Include field
+//- 0 = Exclude field  
+//- Improves performance by reducing data transfer
+//- Cannot mix include/exclude (except _id)
+//- Works with all find operations
+
+//EMBEDDED DOCUMENTS --------------------
+//Embedded Document = A document stored inside another document
+//Also called "nested documents" or "subdocuments"
+//MongoDB's way of representing one-to-one and one-to-many relationships
+
+//WHAT ARE EMBEDDED DOCUMENTS?---------------------------
+//Instead of separate tables (like SQL), MongoDB stores related data together
+//Example: User document with embedded address document
+
+//BASIC EXAMPLE:
+//{
+//  _id: ObjectId("..."),
+//  name: "John Doe",
+//  email: "john@gmail.com",
+//  address: {                    // ← This is an embedded document
+//    street: "123 Main St",
+//    city: "New York", 
+//    zipcode: "10001",
+//    country: "USA"
+//  }
+//}
+
+//TYPES OF EMBEDDED DOCUMENTS---------------------------
+//1. SINGLE EMBEDDED DOCUMENT (Object)
+//{
+//  _id: 1,
+//  name: "John Doe",
+//  profile: {                    // Single embedded document
+//    bio: "Software Developer",
+//    website: "johndoe.com",
+//    social: {
+//      twitter: "@johndoe",
+//      linkedin: "john-doe"
+//    }
+//  }
+//}
+
+//2. ARRAY OF EMBEDDED DOCUMENTS
+//{
+//  _id: 1,
+//  name: "John Doe",
+//  projects: [                   // Array of embedded documents
+//    {
+//      name: "Project A",
+//      status: "completed",
+//      startDate: "2023-01-15",
+//      technologies: ["React", "Node.js"]
+//    },
+//    {
+//      name: "Project B", 
+//      status: "ongoing",
+//      startDate: "2023-06-01",
+//      technologies: ["Python", "MongoDB"]
+//    }
+//  ]
+//}
+
+//REAL-WORLD EXAMPLES---------------------------
+//E-commerce Order:
+//{
+//  _id: ObjectId("..."),
+//  orderNumber: "ORD-2023-001",
+//  customer: {                   // Embedded customer info
+//    name: "John Doe",
+//    email: "john@gmail.com",
+//    phone: "123-456-7890"
+//  },
+//  shippingAddress: {            // Embedded address
+//    street: "123 Main St",
+//    city: "New York",
+//    zipcode: "10001"
+//  },
+//  items: [                      // Array of embedded items
+//    {
+//      productId: "PROD-001",
+//      name: "Laptop",
+//      price: 999.99,
+//      quantity: 1
+//    },
+//    {
+//      productId: "PROD-002", 
+//      name: "Mouse",
+//      price: 29.99,
+//      quantity: 2
+//    }
+//  ],
+//  total: 1059.97,
+//  orderDate: ISODate("2023-10-01")
+//}
+
+//Blog Post with Comments:
+//{
+//  _id: ObjectId("..."),
+//  title: "Introduction to MongoDB",
+//  content: "MongoDB is a NoSQL database...",
+//  author: {                     // Embedded author info
+//    name: "Jane Smith",
+//    email: "jane@blogger.com",
+//    avatar: "avatar.jpg"
+//  },
+//  comments: [                   // Array of embedded comments
+//    {
+//      commentId: 1,
+//      author: "Bob Wilson",
+//      text: "Great article!",
+//      date: ISODate("2023-10-02"),
+//      likes: 5
+//    },
+//    {
+//      commentId: 2,
+//      author: "Alice Brown", 
+//      text: "Very helpful, thanks!",
+//      date: ISODate("2023-10-03"),
+//      likes: 3
+//    }
+//  ],
+//  tags: ["mongodb", "database", "nosql"],
+//  publishDate: ISODate("2023-10-01")
+//}
+
+//QUERYING EMBEDDED DOCUMENTS---------------------------
+//1. Query embedded document fields (dot notation):
+//db.users.find({"address.city": "New York"})
+//db.users.find({"profile.bio": "Software Developer"})
+
+//2. Query array of embedded documents:
+//db.users.find({"projects.status": "ongoing"})
+//db.users.find({"projects.name": "Project A"})
+
+//3. Query with multiple embedded fields:
+//db.users.find({
+//  "address.city": "New York",
+//  "address.zipcode": "10001"
+//})
+
+//4. Query array elements with $elemMatch:
+//db.users.find({
+//  projects: {
+//    $elemMatch: {
+//      status: "ongoing",
+//      technologies: "React"
+//    }
+//  }
+//})
+
+//UPDATING EMBEDDED DOCUMENTS---------------------------
+//1. Update embedded document field:
+//db.users.updateOne(
+//  {_id: 1},
+//  {$set: {"address.city": "Los Angeles"}}
+//)
+
+//2. Update entire embedded document:
+//db.users.updateOne(
+//  {_id: 1},
+//  {$set: {
+//    address: {
+//      street: "456 Oak Ave",
+//      city: "San Francisco", 
+//      zipcode: "94102",
+//      country: "USA"
+//    }
+//  }}
+//)
+
+//3. Add to array of embedded documents:
+//db.users.updateOne(
+//  {_id: 1},
+//  {$push: {
+//    projects: {
+//      name: "Project C",
+//      status: "planning",
+//      startDate: "2023-12-01",
+//      technologies: ["Vue.js", "Express"]
+//    }
+//  }}
+//)
+
+//4. Update specific array element:
+//db.users.updateOne(
+//  {_id: 1, "projects.name": "Project A"},
+//  {$set: {"projects.$.status": "completed"}}
+//)
+
+//5. Update nested embedded document:
+//db.users.updateOne(
+//  {_id: 1},
+//  {$set: {"profile.social.twitter": "@john_doe_dev"}}
+//)
+
+//PROJECTION WITH EMBEDDED DOCUMENTS---------------------------
+//1. Include entire embedded document:
+//db.users.find({}, {name: 1, address: 1})
+
+//2. Include specific embedded fields:
+//db.users.find({}, {name: 1, "address.city": 1, "address.zipcode": 1})
+
+//3. Exclude embedded fields:
+//db.users.find({}, {"address.street": 0})
+
+//4. Array projection:
+//db.users.find({}, {name: 1, projects: {$slice: 2}}) // First 2 projects
+
+//ADVANTAGES OF EMBEDDED DOCUMENTS---------------------------
+//1. Data locality - Related data stored together
+//2. Atomic operations - Update entire document atomically
+//3. Better performance - Single query gets all related data
+//4. Natural data modeling - Matches object-oriented thinking
+//5. No joins needed - All data in one document
+
+//DISADVANTAGES---------------------------
+//1. Document size limit (16MB in MongoDB)
+//2. Data duplication if same embedded doc used elsewhere
+//3. Complex queries on deeply nested data
+//4. Harder to index embedded array elements
+//5. Can lead to large documents
+
+//WHEN TO USE EMBEDDED DOCUMENTS---------------------------
+// Use embedded documents when:
+//- Data is accessed together frequently
+//- One-to-one relationships (user → profile)
+//- One-to-few relationships (user → addresses)
+//- Child data doesn't exist independently
+//- You need atomic updates
+
+// Don't use embedded documents when:
+//- Embedded arrays grow unbounded
+//- Data is accessed independently often
+//- Many-to-many relationships
+//- Document size approaches 16MB limit
+//- Need complex queries on embedded data
+
+//EMBEDDED vs REFERENCED DOCUMENTS---------------------------
+//Embedded (data together):
+//{
+//  _id: 1,
+//  name: "John",
+//  orders: [
+//    {orderId: 1, total: 100},
+//    {orderId: 2, total: 200}
+//  ]
+//}
+
+//Referenced (separate collections):
+//Users: {_id: 1, name: "John"}
+//Orders: {_id: 1, userId: 1, total: 100}
+//Orders: {_id: 2, userId: 1, total: 200}
+
+//BEST PRACTICES---------------------------
+//1. Embed when data is accessed together
+//2. Reference when data grows large or is shared
+//3. Limit embedded array size (< 100 elements)
+//4. Use dot notation for querying nested fields
+//5. Consider document size limits
+//6. Index embedded fields that are queried frequently
+//7. Use $elemMatch for complex array queries
+
+//INDEXING EMBEDDED DOCUMENTS---------------------------
+//Create indexes on embedded fields:
+//db.users.createIndex({"address.city": 1})
+//db.users.createIndex({"projects.status": 1})
+//db.users.createIndex({"profile.social.twitter": 1})
