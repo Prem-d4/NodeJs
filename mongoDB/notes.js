@@ -1688,3 +1688,122 @@
     //- Performance is critical (consider denormalization)
     //- Joining very large collections without proper indexes
 
+//SCHEMA VALIDATION -------------------------------------------------
+//MongoDB supports document validation using JSON Schema
+//Validates documents on insert and update operations
+//Helps ensure data consistency and integrity
+
+//BASIC VALIDATION SYNTAX---------------------------
+//db.createCollection('collectionName', {
+//  validator: {
+//    $jsonSchema: {
+//      bsonType: 'object',
+//      required: ['field1', 'field2'],
+//      properties: {
+//        field1: {
+//          bsonType: 'string',
+//          description: 'must be a string and is required'
+//        }
+//      }
+//    }
+//  }
+//})
+
+//BSON TYPES---------------------------
+//string      - Text data
+//int         - 32-bit integer
+//long        - 64-bit integer
+//double      - 64-bit floating point
+//decimal     - 128-bit decimal
+//bool        - Boolean true/false
+//date        - Date object
+//objectId    - MongoDB ObjectId
+//array       - Array of values
+//object      - Embedded document
+//null        - Null value
+//regex       - Regular expression
+//binData     - Binary data
+
+//VALIDATION OPERATORS---------------------------
+//required        - Array of required field names
+//properties      - Define validation for specific fields
+//additionalProperties - Allow/disallow extra fields (true/false)
+//minLength/maxLength - String length constraints
+//minimum/maximum - Numeric value constraints- hint(>=, <=)
+//exclusiveMinimum/exclusiveMaximum - Exclusive bounds - hint(>, <)
+//pattern         - Regular expression for strings
+//enum            - Array of allowed values
+//items           - Validation for array elements
+//minItems/maxItems - Array length constraints
+//uniqueItems     - Require unique array elements
+
+//VALIDATION ACTIONS---------------------------
+//validationAction: 'error' (default) - Reject invalid documents
+//validationAction: 'warn' - Allow but log warnings
+//validationLevel: 'strict' (default) - Validate all inserts/updates
+//validationLevel: 'moderate' - Only validate documents that match schema
+
+//Example with validation options:
+//db.createCollection('logs', {
+//  validator: {
+//    $jsonSchema: {
+//      bsonType: 'object',
+//      required: ['message', 'level'],
+//      properties: {
+//        message: { bsonType: 'string' },
+//        level: { enum: ['info', 'warn', 'error'] }
+//      }
+//    }
+//  },
+//  validationAction: 'warn',      // Log warnings instead of errors
+//  validationLevel: 'moderate'    // Only validate matching documents
+//})
+
+//ADDING VALIDATION TO EXISTING COLLECTION---------------------------
+//db.runCommand({
+//  collMod: 'existingCollection',
+//  validator: {
+//    $jsonSchema: {
+//      bsonType: 'object',
+//      required: ['name'],
+//      properties: {
+//        name: { bsonType: 'string' }
+//      }
+//    }
+//  }
+//})
+
+//VALIDATION ERROR EXAMPLES---------------------------
+//Valid document:
+//db.posts2.insertOne({
+//  title: "My Post",
+//  text: "Post content",
+//  creator: ObjectId("507f1f77bcf86cd799439011"),
+//  comments: [
+//    {
+//      text: "Great post!",
+//      author: ObjectId("507f1f77bcf86cd799439012")
+//    }
+//  ]
+//})
+
+//Invalid document (will fail):
+//db.posts2.insertOne({
+//  title: 123,                    // Should be string
+//  text: "Post content",
+//  creator: "invalid-id",         // Should be ObjectId
+//  comments: "not-an-array"       // Should be array
+//})
+//Error: Document failed validation
+
+//BEST PRACTICES---------------------------
+//1. Define validation during collection creation
+//2. Use descriptive error messages
+//3. Validate required fields and data types
+//4. Use enums for limited value sets
+//5. Set reasonable min/max constraints
+//6. Consider performance impact of complex validations
+//7. Test validation rules thoroughly
+//8. Use 'warn' action during development, 'error' in production
+//9. Document your validation schema
+//10. Keep validation rules simple and maintainable
