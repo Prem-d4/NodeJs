@@ -1135,3 +1135,556 @@
 //db.users.createIndex({"address.city": 1})
 //db.users.createIndex({"projects.status": 1})
 //db.users.createIndex({"profile.social.twitter": 1})
+
+
+//SCHEMAS -----------------
+//Schema = Structure/blueprint that defines the shape and rules for documents in a collection
+//Unlike SQL, MongoDB is schema-flexible but you can enforce schemas for data consistency
+
+//WHAT IS A SCHEMA?---------------------------
+//A schema defines:
+//- Field names and data types
+//- Required vs optional fields  
+//- Validation rules
+//- Default values
+//- Relationships between documents
+
+//SCHEMA-LESS vs SCHEMA-FULL---------------------------
+//MongoDB is naturally schema-less:
+//- Documents in same collection can have different structures
+//- Fields can be added/removed without altering collection
+//- Data types can vary between documents
+
+//DATATYPES FOR SCHEMA ------------------------------
+//String      - Text data
+//Number      - Integer(int32), NumberLong(int64), NumberDecimal
+//Date        - Date and time - ISO Date("2025-08-12"), Timestamp(114212532)
+//Boolean     - true/false
+//ObjectId    - MongoDB ObjectId - ObjectId('mnajsdvfbio21k341234123oreknwfdasms')
+//Array       - List of values - [...,...,..]
+//Mixed       - Any data type
+//Buffer      - Binary data
+//Map         - Key-value pairs
+//Decimal128  - High precision decimal
+
+//SCHEMA VALIDATION ---------------------------
+//Built-in validators:
+//required   - Field must have a value
+//min/max    - For numbers and dates
+//minlength/maxlength - For strings
+//match      - Regular expression pattern
+//enum       - Value must be in specified array
+//unique     - Value must be unique in collection
+
+//Custom validators:
+//const userSchema = new mongoose.Schema({
+//  username: {
+//    type: String,
+//    validate: {
+//      validator: function(v) {
+//        return /^[a-zA-Z0-9_]+$/.test(v);  // Only alphanumeric and underscore
+//      },
+//      message: 'Username can only contain letters, numbers, and underscores'
+//    }
+//  },
+//  age: {
+//    type: Number,
+//    validate: {
+//      validator: function(v) {
+//        return v >= 13;              // Must be at least 13
+//      },
+//      message: 'Must be at least 13 years old'
+//    }
+//  }
+//});
+
+//RELATIONS --------------------------------------
+//MongoDB relationships define how documents in different collections are connected
+//Unlike SQL joins, MongoDB uses two main approaches: Embedding and Referencing
+
+
+//TYPES OF RELATIONSHIPS---------------------------
+//1. One-to-One (1:1)     - One document relates to exactly one other document
+    //APPROACH 1: EMBEDDED (RECOMMENDED)
+    //User with Profile embedded:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439011"),
+    //  username: "john_doe",
+    //  email: "john@gmail.com",
+    //  password: "hashedPassword123",
+    //  profile: {                    // One-to-One embedded
+    //    firstName: "John",
+    //    lastName: "Doe",
+    //    bio: "Full-stack developer",
+    //    avatar: "profile-pic.jpg",
+    //    dateOfBirth: ISODate("1990-05-15"),
+    //    phone: "+1-555-0123",
+    //    address: {
+    //      street: "123 Main St",
+    //      city: "New York",
+    //      zipcode: "10001"
+    //    },
+    //    socialMedia: {
+    //      twitter: "@johndoe",
+    //      linkedin: "john-doe-dev"
+    //    }
+    //  },
+    //  createdAt: ISODate("2023-01-15"),
+    //  isActive: true
+    //}
+
+    //APPROACH 2: REFERENCED (WHEN PROFILE IS LARGE)
+    //Users Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439011"),
+    //  username: "john_doe", 
+    //  email: "john@gmail.com",
+    //  password: "hashedPassword123",
+    //  profileId: ObjectId("507f1f77bcf86cd799439012"), // Reference to profile
+    //  createdAt: ISODate("2023-01-15"),
+    //  isActive: true
+    //}
+
+    //Profiles Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439012"),
+    //  userId: ObjectId("507f1f77bcf86cd799439011"), // Back reference to user
+    //  firstName: "John",
+    //  lastName: "Doe", 
+    //  bio: "Full-stack developer with 5+ years experience...",
+    //  avatar: "profile-pic.jpg",
+    //  dateOfBirth: ISODate("1990-05-15"),
+    //  phone: "+1-555-0123",
+    //  address: {
+    //    street: "123 Main St",
+    //    city: "New York", 
+    //    zipcode: "10001"
+    //  },
+    //  socialMedia: {
+    //    twitter: "@johndoe",
+    //    linkedin: "john-doe-dev",
+    //    github: "johndoe"
+    //  },
+    //  preferences: {
+    //    theme: "dark",
+    //    notifications: true,
+    //    language: "en"
+    //  },
+    //  lastUpdated: ISODate("2023-10-01")
+    //}
+
+//2. One-to-Many (1:N)    - One document relates to multiple other documents  
+    //APPROACH 1: EMBEDDED (ONE-TO-FEW, <100 ITEMS)
+    //Blog Post with Comments:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439011"),
+    //  title: "Introduction to MongoDB",
+    //  content: "MongoDB is a powerful NoSQL database...",
+    //  author: "Jane Smith",
+    //  publishDate: ISODate("2023-10-01"),
+    //  tags: ["mongodb", "database", "nosql"],
+    //  comments: [                   // One-to-Many embedded
+    //    {
+    //      _id: ObjectId("507f1f77bcf86cd799439012"),
+    //      author: "Bob Wilson",
+    //      email: "bob@gmail.com",
+    //      text: "Great article! Very informative.",
+    //      date: ISODate("2023-10-02"),
+    //      likes: 5,
+    //      replies: [
+    //        {
+    //          author: "Alice Brown",
+    //          text: "I agree!",
+    //          date: ISODate("2023-10-02")
+    //        }
+    //      ]
+    //    },
+    //    {
+    //      _id: ObjectId("507f1f77bcf86cd799439013"),
+    //      author: "Charlie Davis",
+    //      email: "charlie@gmail.com", 
+    //      text: "Thanks for sharing this knowledge.",
+    //      date: ISODate("2023-10-03"),
+    //      likes: 3
+    //    }
+    //  ],
+    //  viewCount: 150,
+    //  status: "published"
+    //}
+
+    //APPROACH 2: REFERENCED (ONE-TO-MANY, >100 ITEMS)
+    //User with Orders:
+    //Users Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439017"),
+    //  name: "John Doe",
+    //  email: "john@gmail.com",
+    //  phone: "+1-555-0123",
+    //  createdAt: ISODate("2023-01-15"),
+    //  isActive: true
+    //}
+
+    //Orders Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439018"),
+    //  userId: ObjectId("507f1f77bcf86cd799439017"), // Reference to user
+    //  orderNumber: "ORD-2023-001",
+    //  items: [
+    //    {productId: "PROD-001", name: "Laptop", price: 999.99, quantity: 1},
+    //    {productId: "PROD-002", name: "Mouse", price: 29.99, quantity: 2}
+    //  ],
+    //  total: 1059.97,
+    //  status: "delivered",
+    //  orderDate: ISODate("2023-10-01"),
+    //  shippingAddress: {
+    //    street: "123 Main St",
+    //    city: "New York",
+    //    zipcode: "10001"
+    //  }
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439019"),
+    //  userId: ObjectId("507f1f77bcf86cd799439017"), // Same user, different order
+    //  orderNumber: "ORD-2023-002",
+    //  items: [
+    //    {productId: "PROD-003", name: "Keyboard", price: 79.99, quantity: 1}
+    //  ],
+    //  total: 79.99,
+    //  status: "processing",
+    //  orderDate: ISODate("2023-10-15")
+    //}
+
+    //Category with Products:
+    //Categories Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439020"),
+    //  name: "Electronics",
+    //  description: "Electronic devices and gadgets",
+    //  slug: "electronics",
+    //  isActive: true
+    //}
+
+    //Products Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439021"),
+    //  categoryId: ObjectId("507f1f77bcf86cd799439020"), // Reference to category
+    //  name: "iPhone 15",
+    //  description: "Latest iPhone model",
+    //  price: 999.99,
+    //  stock: 50,
+    //  images: ["iphone1.jpg", "iphone2.jpg"],
+    //  specifications: {
+    //    storage: "128GB",
+    //    color: "Space Gray",
+    //    warranty: "1 year"
+    //  }
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439022"),
+    //  categoryId: ObjectId("507f1f77bcf86cd799439020"), // Same category
+    //  name: "MacBook Pro",
+    //  description: "Professional laptop",
+    //  price: 1999.99,
+    //  stock: 25,
+    //  images: ["macbook1.jpg", "macbook2.jpg"]
+    //}
+
+//3. Many-to-Many (M:N)   - Multiple documents relate to multiple other documents
+    //APPROACH 1: ARRAY OF REFERENCES (BOTH SIDES)
+    //Students ↔ Courses:
+    //Students Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439023"),
+    //  name: "Alice Johnson",
+    //  email: "alice@university.edu",
+    //  studentId: "STU-2023-001",
+    //  major: "Computer Science",
+    //  courseIds: [                  // Array of course references
+    //    ObjectId("507f1f77bcf86cd799439025"),
+    //    ObjectId("507f1f77bcf86cd799439026"),
+    //    ObjectId("507f1f77bcf86cd799439027")
+    //  ],
+    //  enrollmentDate: ISODate("2023-09-01")
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439024"),
+    //  name: "Bob Smith",
+    //  email: "bob@university.edu",
+    //  studentId: "STU-2023-002",
+    //  major: "Mathematics",
+    //  courseIds: [                  // Different courses
+    //    ObjectId("507f1f77bcf86cd799439025"),
+    //    ObjectId("507f1f77bcf86cd799439028")
+    //  ],
+    //  enrollmentDate: ISODate("2023-09-01")
+    //}
+
+    //Courses Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439025"),
+    //  title: "Database Systems",
+    //  code: "CS-301",
+    //  credits: 3,
+    //  instructor: "Dr. Wilson",
+    //  studentIds: [                 // Array of student references
+    //    ObjectId("507f1f77bcf86cd799439023"),
+    //    ObjectId("507f1f77bcf86cd799439024")
+    //  ],
+    //  maxCapacity: 30,
+    //  semester: "Fall 2023"
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439026"),
+    //  title: "Web Development",
+    //  code: "CS-350",
+    //  credits: 4,
+    //  instructor: "Prof. Davis",
+    //  studentIds: [
+    //    ObjectId("507f1f77bcf86cd799439023")
+    //  ],
+    //  maxCapacity: 25,
+    //  semester: "Fall 2023"
+    //}
+
+    //APPROACH 2: JUNCTION COLLECTION (RECOMMENDED)
+    //Users ↔ Roles with additional metadata:
+    //Users Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439029"),
+    //  name: "John Doe",
+    //  email: "john@company.com",
+    //  department: "Engineering",
+    //  createdAt: ISODate("2023-01-15")
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439030"),
+    //  name: "Jane Smith",
+    //  email: "jane@company.com",
+    //  department: "Marketing",
+    //  createdAt: ISODate("2023-02-01")
+    //}
+
+    //Roles Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439031"),
+    //  name: "Admin",
+    //  description: "Full system access",
+    //  permissions: ["read", "write", "delete", "manage_users"]
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439032"),
+    //  name: "Editor",
+    //  description: "Content management access",
+    //  permissions: ["read", "write", "publish"]
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439033"),
+    //  name: "Viewer",
+    //  description: "Read-only access",
+    //  permissions: ["read"]
+    //}
+
+    //UserRoles Junction Collection:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439034"),
+    //  userId: ObjectId("507f1f77bcf86cd799439029"),
+    //  roleId: ObjectId("507f1f77bcf86cd799439031"),
+    //  assignedBy: ObjectId("507f1f77bcf86cd799439030"),
+    //  assignedDate: ISODate("2023-01-15"),
+    //  expiryDate: ISODate("2024-01-15"),
+    //  isActive: true,
+    //  notes: "Initial admin assignment"
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439035"),
+    //  userId: ObjectId("507f1f77bcf86cd799439029"),
+    //  roleId: ObjectId("507f1f77bcf86cd799439032"),
+    //  assignedBy: ObjectId("507f1f77bcf86cd799439030"),
+    //  assignedDate: ISODate("2023-03-01"),
+    //  expiryDate: null,
+    //  isActive: true,
+    //  notes: "Additional editor role for content management"
+    //}
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439036"),
+    //  userId: ObjectId("507f1f77bcf86cd799439030"),
+    //  roleId: ObjectId("507f1f77bcf86cd799439032"),
+    //  assignedBy: ObjectId("507f1f77bcf86cd799439029"),
+    //  assignedDate: ISODate("2023-02-01"),
+    //  expiryDate: null,
+    //  isActive: true,
+    //  notes: "Editor role for marketing content"
+    //}
+
+    //APPROACH 3: EMBEDDED ARRAYS (SIMPLE CASES)
+    //Articles ↔ Tags:
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439037"),
+    //  title: "Introduction to MongoDB",
+    //  content: "MongoDB is a powerful NoSQL database...",
+    //  author: "Tech Writer",
+    //  tags: [                       // Simple array of tag names
+    //    "mongodb",
+    //    "database", 
+    //    "nosql",
+    //    "tutorial",
+    //    "beginner"
+    //  ],
+    //  publishDate: ISODate("2023-10-01"),
+    //  viewCount: 1250
+    //}
+
+    //Products ↔ Categories (Multiple categories per product):
+    //{
+    //  _id: ObjectId("507f1f77bcf86cd799439038"),
+    //  name: "Gaming Laptop",
+    //  description: "High-performance laptop for gaming",
+    //  price: 1499.99,
+    //  categories: [                 // Array of category references
+    //    ObjectId("507f1f77bcf86cd799439039"), // Electronics
+    //    ObjectId("507f1f77bcf86cd799439040"), // Gaming
+    //    ObjectId("507f1f77bcf86cd799439041")  // Computers
+    //  ],
+    //  specifications: {
+    //    processor: "Intel i7",
+    //    ram: "16GB",
+    //    storage: "1TB SSD"
+    //  }
+    //}
+
+//IMPORTANT NOTE ------------------------------
+//1. Document size limit: 16MB per document maximum
+//2. Avoid super deep nesting (100+ levels) - impacts performance and readability
+//3. Avoid extremely long arrays (1000+ elements) - use references instead
+//4. Embedded arrays should typically be < 100 elements for optimal performance
+//5. Consider query patterns when choosing embedded vs referenced approach
+    //DOCUMENT SIZE EXAMPLES---------------------------
+    //BAD - Will hit 16MB limit:
+    //{
+    //  _id: ObjectId("..."),
+    //  title: "Blog Post",
+    //  comments: [
+    //    // 50,000+ comments embedded = document too large
+    //  ]
+    //}
+
+    //GOOD - Use references for large datasets:
+    //Posts: {_id, title, content}
+    //Comments: {_id, postId, text, author}
+
+    //BAD - Too deep nesting:
+    //{
+    //  level1: {
+    //    level2: {
+    //      level3: {
+    //        // ... 100+ levels deep
+    //        level100: {
+    //          data: "hard to query and maintain"
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
+
+    //GOOD - Flatten structure:
+    //{
+    //  _id: ObjectId("..."),
+    //  category: "electronics",
+    //  subcategory: "phones",
+    //  brand: "apple",
+    //  model: "iphone15"
+    //}
+
+    //PERFORMANCE GUIDELINES---------------------------
+    //Embedded arrays optimal sizes:
+    //- Tags: < 20 items
+    //- Comments: < 50 items  
+    //- Order items: < 100 items
+    //- User addresses: < 10 items
+
+    //When to switch to references:
+    //- Array grows beyond 100 elements
+    //- Document approaches 1MB in size
+    //- Need to query array elements independently
+    //- Array elements are frequently updated
+
+//$LOOKUP - AGGREGATION JOIN OPERATION---------------------------
+//$lookup performs a left outer join between collections
+//Similar to SQL JOIN - combines documents from different collections
+//Part of MongoDB aggregation pipeline
+
+    //BASIC SYNTAX---------------------------
+    //db.collection.aggregate([
+    //  {
+    //    $lookup: {
+    //      from: "foreignCollection",        // Collection to join with
+    //      localField: "fieldInCurrentDoc", // Field from current collection
+    //      foreignField: "fieldInForeignDoc", // Field from foreign collection
+    //      as: "outputArrayField"           // Name for joined data array
+    //    }
+    //  }
+    //])
+
+    //SIMPLE LOOKUP EXAMPLE---------------------------
+    //Users Collection:
+    //{_id: ObjectId("user1"), name: "John", email: "john@gmail.com"}
+    //{_id: ObjectId("user2"), name: "Jane", email: "jane@gmail.com"}
+
+    //Orders Collection:
+    //{_id: ObjectId("order1"), userId: ObjectId("user1"), total: 100, product: "Laptop"}
+    //{_id: ObjectId("order2"), userId: ObjectId("user1"), total: 50, product: "Mouse"}
+    //{_id: ObjectId("order3"), userId: ObjectId("user2"), total: 200, product: "Phone"}
+
+    //Query - Get users with their orders:
+    //db.users.aggregate([
+    //  {
+    //    $lookup: {
+    //      from: "orders",           // Join with orders collection
+    //      localField: "_id",        // User's _id field
+    //      foreignField: "userId",   // Order's userId field
+    //      as: "userOrders"          // Output array name
+    //    }
+    //  }
+    //])
+
+    //Result:
+    //[
+    //  {
+    //    _id: ObjectId("user1"),
+    //    name: "John",
+    //    email: "john@gmail.com",
+    //    userOrders: [              // Joined orders array
+    //      {_id: ObjectId("order1"), userId: ObjectId("user1"), total: 100, product: "Laptop"},
+    //      {_id: ObjectId("order2"), userId: ObjectId("user1"), total: 50, product: "Mouse"}
+    //    ]
+    //  },
+    //  {
+    //    _id: ObjectId("user2"),
+    //    name: "Jane", 
+    //    email: "jane@gmail.com",
+    //    userOrders: [
+    //      {_id: ObjectId("order3"), userId: ObjectId("user2"), total: 200, product: "Phone"}
+    //    ]
+    //  }
+    //]
+
+    //LOOKUP PERFORMANCE TIPS---------------------------
+    //1. Index foreign fields for better performance
+    //2. Use $match before $lookup to reduce documents
+    //3. Use pipeline in $lookup for complex filtering
+    //4. Limit fields with $project after lookup
+    //5. Consider embedding vs lookup based on query patterns
+
+    //WHEN TO USE LOOKUP---------------------------
+    //Use $lookup when:
+    //- Need complex joins with filtering
+    //- Want to aggregate data across collections
+    //- Need to transform joined data
+    //- Working with large datasets efficiently
+    //- Need SQL-like join functionality
+
+    //Avoid $lookup when:
+    //- Simple one-to-one relationships (use embedding)
+    //- Performance is critical (consider denormalization)
+    //- Joining very large collections without proper indexes
+
