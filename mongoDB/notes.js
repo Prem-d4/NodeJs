@@ -2040,3 +2040,18 @@
 //- Reference: Large, independent access, complex queries
 //- Denormalize: Performance critical, acceptable inconsistency
 //- Hybrid: Mix approaches based on specific use cases
+
+
+//CREATING DOCUMENTS ------------------------------
+//insertOne() - Insert a single document
+//insertMany() - Insert multiple documents
+//insert() - Deprecated, use insertOne/insertMany
+//db.hobbies.insertMany([{_id:"yoga",name:"yoga"},{_id:"cooking",name:"cooking"},{_id:"reading",name:"reading"}],{ordered:false}) - Insert multiple documents, continue on error by giving ordered:false
+//writeConcern - Specify write acknowledgment level (journal, w, wtimeout)
+//db.collection.insertOne(document, {writeConcern: {w: "majority", wtimeout: 5000}}) - Insert with majority write concern and 5s timeout
+//Atomicity - Single document operations are atomic by default
+//mongoimport - Command-line tool for bulk importing JSON/CSV data
+//Example: mongoimport --db mydb --collection mycollection --file data.json --jsonArray --drop
+//Example: mongoimport --db mydb --collection mycollection --type csv --headerline --file data.csv --drop
+//--drop option drops existing collection before import to avoid duplicates
+//--jsonArray option specifies input file contains a JSON array of documents
