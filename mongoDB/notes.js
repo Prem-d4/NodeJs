@@ -2105,5 +2105,40 @@
 
 
 //UPDATING DOCUMENTS ------------------------------
+//updateOne() - Update a single document
+//updateMany() - Update multiple documents
+//$set - Set field value - adds field if not present, updates if present, multiple fields can be set at once
+// $inc - Increment numeric field, decrement with negative value, eg:- db.users2.updateOne({name:"Max"},{$inc:{age:-20},$set:{isSporty:true}})
+//$min - Set field to minimum value, if the new value is less than current value, syntax: db.collection.updateOne({<filter>},{$min:{<field>:<value>}})
+//$max - Set field to maximum value, if the new value is greater than current value, syntax: db.collection.updateOne({<filter>},{$max:{<field>:<value>}})
+//$mul - Multiply numeric field by value, syntax: db.collection.updateOne({<filter>},{$mul:{<field>:<value>}})
+//$unset - Remove field from document, syntax: db.collection.updateOne({<filter>},{$unset:{<field>:""}})
+//$rename - Rename field in document, syntax: db.collection.updateOne({<filter>},{$rename:{<oldField>:<newField>}})
+//upsert - Insert document if no match found, set upsert:true in options object
+//Example: db.users.updateOne({name: "Alice"}, {$set: {age: 30}}, {upsert: true})
+//Matched Array Elements - Use arrayFilters option to target specific array elements in update
+//Example: db.users2.updateOne({hobbies:{$elemMatch:{title:"Sports",frequency:{$gte:3}}}},{$set:{"hobbies.$.highFrequency":true}})
+//All array elements - Use $[] to update all elements in an array
+//Example: db.users2.updateOne({name:"Max"},{$set:{"hobbies.$[].highFrequency":false}})
+//Finding and updating specific array element - Use filtered positional operator $[<identifier>] with arrayFilters
+//Example: db.users2.updateMany({"hobbies.frequency":{$gt:2}},{$set:{"hobbies.$[el].goodFrequency":true}},{arrayFilters:[{"el.frequency":{$gt:2}}]})
+//Adding to arrays - Use $push to add elements to an array field
+//Example: db.users.updateOne({name:"Alice"},{$push:{hobbies:{title:"Traveling",frequency:2}}})
+//Adding multiple elements - Use $each with $push to add multiple elements at once
+//Example: db.users.updateOne({name:"Alice"},{$push:{hobbies:{$each:[{title:"Cooking",frequency:3},{title:"Reading",frequency:5}]}}})
+//Removing from arrays - Use $pull to remove elements matching criteria
+//Example: db.users.updateOne({name:"Alice"},{$pull:{hobbies:{title:"Traveling"}}})
+//Removing specific element - Use $pull with specific criteria to remove matching elements
+//Example: db.users.updateOne({name:"Alice"},{$pull:{hobbies:{frequency:{$lt:3}}}}) // Remove hobbies with frequency less than 3
+//Removing last element - Use $pop with 1 to remove last element, -1 to remove first element
+//Example: db.users.updateOne({name:"Alice"},{$pop:{hobbies:1}}) // Remove last hobby
+//Addtoset - Add unique elements to array, ignores duplicates
+//Example: db.users.updateOne({name:"Alice"},{$addToSet:{hobbies:{title:"Reading",frequency:5}}}) // Will not add if already present
 
-
+//DELETING DOCUMENTS ------------------------------
+//deleteOne() - Delete a single document
+//deleteMany() - Delete multiple documents
+//drop() - Drop entire collection
+//Example: db.users.deleteOne({name: "Alice"}) - Delete first document matching criteria    
+//dropDatabase() - Drop entire database 
+//Example: db.dropDatabase() - Drops current database
