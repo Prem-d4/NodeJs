@@ -2055,3 +2055,52 @@
 //Example: mongoimport --db mydb --collection mycollection --type csv --headerline --file data.csv --drop
 //--drop option drops existing collection before import to avoid duplicates
 //--jsonArray option specifies input file contains a JSON array of documents
+
+//READING DOCUMENTS ------------------------------
+//find() - Query documents in a collection
+//findOne() - Retrieve a single document
+//Projection - Specify fields to include/exclude in results
+//Operators -------
+//Comparison: 
+// $eq - Equal
+// $ne - Not equal
+// $gt - greater than
+// $gte - greater than or equal
+// $lt - less than
+// $lte - less than or equal
+// $in - present in
+// $nin - not present in
+//Logical:
+// $and - logical AND
+// $or - logical OR
+// $not - logical NOT
+//Element:
+// $exists - field exists
+// $type - field type
+//Evaluation:
+// $regex - regular expression match
+// $expr - expression evaluation - eg:- financialData> db.sales.find({$expr:{$gt:["$volume","$target"]}})
+// $cond - conditional expressions
+//if/else logic
+//$subtract - subtract values
+// $add - add values
+//Array:
+//$size - array length
+// $all - all elements match , doesnot match order
+// $elemMatch - match array elements
+//Cursor Methods -------
+//Applying cursor methods to refine results
+// const dataCursor = db.tasks.find();
+// dataCursor.next(); // Get next document
+//sorting cursor results
+// dataCursor.sort({priority: -1}); // Sort by priority descending
+//skipping documents
+// dataCursor.skip(5); // Skip first 5 documents
+//limiting results
+// dataCursor.limit(10); // Limit to 10 documents
+//dataCursor.skip(10).limit(5).sort({createdAt: -1}); // Skip 10, limit 5, sort by createdAt desc
+//Projection in array fields
+// db.users.find({},{name:1, hobbies:{$slice:3}}); // Get name and first 3 hobbies
+//slice can take two arguments - $slice:[skip,limit]
+
+
